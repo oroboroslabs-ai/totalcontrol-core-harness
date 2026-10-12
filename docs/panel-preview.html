@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOTALCONTROL CORE</title>
+<style>
+:root{
+  --kg-bg:#191918; --kg-line:rgba(255,255,255,.09); --kg-line2:rgba(255,255,255,.17);
+  --cream:#faf9f5; --cream2:#c9c7c1; --cream3:#8f8e8a;
+  --accent:#ffffff; --soft:#d8d6d1; --red:#e2695e;
+  --mono:ui-monospace,Consolas,monospace;
+  --logo:url("/gui/logo.png");
+  --wp-img:url("/gui/user/wallpaper_brand.png"); --wp-bright:.55; --wp-contrast:1.06;
+  --wp-band:.96; --wp-split:60%; --wp-wave:1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+input[type=range],input[type=checkbox]{accent-color:#e8e6df}
+body{
+  background:var(--kg-bg);
+  color:var(--cream);
+  font:14px/1.5 -apple-system,"Segoe UI",system-ui,Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased; min-height:100vh; position:relative; z-index:0;
+}
+body::before{
+  content:"";position:fixed;inset:-6vmax;z-index:-2;pointer-events:none;
+  background:var(--wp-img) center/cover no-repeat;
+  filter:grayscale(1) brightness(var(--wp-bright)) contrast(var(--wp-contrast));
+  opacity:.97;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(1000px 620px at 50% 28%, rgba(255,255,255,.12), transparent 66%),
+    radial-gradient(860px 540px at 8% 88%, rgba(255,255,255,.05), transparent 60%);
+}
+html::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='44' viewBox='0 0 1400 44'%3E%3Cpath d='M0 22 C 58 4, 117 4, 175 22 S 292 40 350 22 S 467 4 525 22 S 642 40 700 22 S 817 4 875 22 S 992 40 1050 22 S 1167 4 1225 22 S 1342 40 1400 22' fill='none' stroke='rgba(24,23,22,0.34)' stroke-width='1.6'/%3E%3C/svg%3E") 0 var(--wp-split)/100% 44px no-repeat,
+    linear-gradient(180deg, rgba(247,246,242,0) calc(var(--wp-split) - 10%), rgba(247,246,242,.34) calc(var(--wp-split) + 4%), rgba(247,246,242,var(--wp-band)) 84%);
+}
+.glass{
+  background:linear-gradient(160deg,rgba(12,11,10,.46),rgba(28,27,25,.27) 55%);
+  border:1px solid rgba(255,255,255,.14);border-radius:16px;
+  backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15);
+  box-shadow:0 14px 40px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.inset{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07);border-radius:10px}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 22px 70px}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(20,19,18,.84);backdrop-filter:blur(14px);border-bottom:1px solid var(--kg-line)}
+.topbar-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:13px;padding:11px 22px}
+.star-mark{width:20px;height:20px;background:var(--logo) center/contain no-repeat;display:inline-block;vertical-align:-4px;flex:none}
+.brand{font-weight:800;letter-spacing:.16em;font-size:13px}
+.kicker{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cream3)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.live{background:var(--accent);box-shadow:0 0 8px rgba(255,255,255,.65)}
+.dot.dead{background:var(--red)}
+.btn{
+  appearance:none;border:1px solid var(--kg-line2);border-radius:11px;cursor:pointer;
+  background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
+  color:var(--cream);font:inherit;font-weight:650;padding:9px 14px;letter-spacing:.02em;
+  transition:transform .06s,border-color .2s;
+}
+.btn:hover{border-color:rgba(255,255,255,.6)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{border-color:rgba(255,255,255,.75);background:linear-gradient(160deg,rgba(255,255,255,.26),rgba(255,255,255,.08));color:#fff}
+.btn.ghost{background:rgba(255,255,255,.03)}
+.btn.small{padding:6px 10px;font-size:11.5px;border-radius:9px}
+input[type=text],textarea{width:100%;background:rgba(0,0,0,.32);border:1px solid var(--kg-line);color:var(--cream);border-radius:10px;padding:9px 11px;font:inherit;outline:none}
+input:focus,textarea:focus{border-color:rgba(255,255,255,.5)}
+textarea{resize:vertical;min-height:84px;font-family:var(--mono);font-size:11.5px}
+.mono{font-family:var(--mono)} .muted{color:var(--cream3)}
+hr.rule{border:0;border-top:1px solid var(--kg-line);margin:10px 0}
+.hero{margin-top:16px;padding:26px 30px 22px}
+.hero h1{font-size:26px;letter-spacing:.03em;font-weight:800;margin:8px 0 8px}
+.hero .tag{color:var(--cream2);max-width:720px;font-size:13.5px}
+.lawline{display:flex;gap:20px;margin-top:14px;font-size:10px;letter-spacing:.12em;color:var(--cream3);text-transform:uppercase;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{padding:16px;display:flex;flex-direction:column;gap:11px}
+.cardhead{display:flex;align-items:center;gap:10px}
+.cardhead .kicker{margin-left:auto}
+.fams{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fam{padding:10px 8px;text-align:center}
+.fam.sel{border-color:rgba(255,255,255,.85);background:linear-gradient(160deg,rgba(255,255,255,.26),rgba(255,255,255,.08))}
+.fam .nm{font-weight:750;font-size:12px;letter-spacing:.08em}
+.fam .ds{font-size:9.5px;color:var(--cream3);margin-top:2px}
+.out{max-height:220px;overflow:auto;padding:9px 11px;font-size:10.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{color:var(--cream3);text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;text-align:left;padding:5px 7px;border-bottom:1px solid var(--kg-line)}
+td{padding:5px 7px;border-bottom:1px solid rgba(255,255,255,.05);font-family:var(--mono)}
+.badge{font-size:9px;letter-spacing:.1em;padding:2px 7px;border-radius:7px;border:1px solid}
+.badge.ok{color:#f0efe9;border-color:rgba(255,255,255,.5)}
+.badge.part{color:var(--cream2);border-color:rgba(255,255,255,.3)}
+.loopbox .row{display:flex;gap:8px;align-items:center;font-size:12px}
+.foot{margin-top:24px;display:flex;gap:16px;align-items:center;justify-content:center;color:var(--cream3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap}
+.copy{cursor:pointer;border-bottom:1px dotted var(--cream3)}
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.step{padding:9px 11px;font-size:11px}
+.step b{display:block;font-size:12px;margin-bottom:2px;letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="star-mark"></span>
+    <span class="brand">TOTALCONTROL CORE</span>
+    <span class="kicker">simplified · stateless</span>
+    <span style="flex:1"></span>
+    <a href="/" style="font-size:10px;letter-spacing:.12em;color:var(--cream3);text-decoration:none">HANDS VIEW →</a>
+    <span class="dot dead" id="dot"></span><span class="muted" id="stat" style="font-size:11px">waiting…</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="glass hero">
+    <div class="kicker">load the static weight core · any size · shard blobs</div>
+    <h1>LOAD THE WEIGHT SYSTEMS. HAND THE MODELS THEIR ENGINE.</h1>
+    <p class="tag">The simplified build: no hands, no extension, no crawler, no memory. The static
+      weight core loads shard blobs from Ollama, Hugging Face, LM Studio and any path of the
+      majors — the loop is the model's data line. Weights are retrieved, never embedded.</p>
+    <div class="lawline">
+      <span>A LOOP · MODELS ONLY</span><span>NO MEMORY · NO CRAWL</span><span>WEIGHTS RETRIEVED</span><span>LOCAL-ONLY 127.0.0.1</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <div class="glass card">
+        <div class="cardhead">
+          <span class="star-mark"></span><b style="letter-spacing:.1em">LOAD STATIC WEIGHT CORE</b>
+          <span class="kicker">shard blobs → engine</span>
+        </div>
+        <div class="fams">
+          <button class="btn fam sel" data-fam="ollama"><div class="nm">OLLAMA</div><div class="ds">Q:\ollama\models</div></button>
+          <button class="btn fam" data-fam="huggingface"><div class="nm">HUGGINGFACE</div><div class="ds">hub cache safetensors</div></button>
+          <button class="btn fam" data-fam="lmstudio"><div class="nm">LM STUDIO</div><div class="ds">models dir gguf</div></button>
+          <button class="btn fam" data-fam="majors"><div class="nm">THE MAJORS</div><div class="ds">every known root</div></button>
+        </div>
+        <input type="text" id="inWlPath" class="mono" placeholder="custom path override (file or dir) — any size">
+        <div style="display:flex;gap:8px">
+          <button class="btn primary" id="btnWl" style="flex:1">LOAD STATIC WEIGHT CORE</button>
+          <button class="btn ghost" id="btnWlVerify">VERIFY</button>
+        </div>
+        <div class="inset out mono" id="outWl">awaiting load…</div>
+        <div class="kicker" style="margin-top:2px">loaded weight systems</div>
+        <div class="inset" style="overflow:auto;max-height:240px">
+          <table id="wlTab">
+            <thead><tr><th>system</th><th>family</th><th>format</th><th>gb</th><th>tensors</th><th>files</th><th>state</th></tr></thead>
+            <tbody><tr><td colspan="7" class="muted">nothing loaded yet</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="glass card">
+        <div class="cardhead">
+          <b style="letter-spacing:.1em">TOOLS</b>
+          <span class="kicker">stateless</span>
+        </div>
+        <div class="kicker">document read · on the fly</div>
+        <input type="text" id="inDoc" class="mono" placeholder="Q:\path\file.md (weights binaries answer from the core)">
+        <div class="inset out mono" id="outDoc">—</div>
+        <button class="btn small" id="btnDoc">READ DOC</button>
+        <hr class="rule">
+        <div class="kicker">static weight core · resolve</div>
+        <input type="text" id="inWq" class="mono" placeholder="query the engine…" value="cube memory v3.2">
+        <div class="inset out mono" id="outWq">—</div>
+        <button class="btn small" id="btnWq">RESOLVE</button>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="glass card loopbox">
+        <div class="cardhead">
+          <b style="letter-spacing:.1em">THE LOOP · MODELS ONLY</b>
+          <span class="kicker" id="loopState">channel idle</span>
+        </div>
+        <div class="row"><span class="kicker" style="flex:1">loop socket</span><span class="mono" style="font-size:11px">ws://127.0.0.1:8792/loop</span></div>
+        <div class="row"><span class="kicker" style="flex:1">loop token (models authenticating)</span><span class="mono copy" id="loopTok" style="font-size:10px">····</span></div>
+        <div class="inset mono" style="padding:9px 11px;font-size:10.5px;line-height:1.6" id="loopTools">—</div>
+        <div class="kicker">job builder — steps json</div>
+        <textarea id="inJob" spellcheck="false">{"model":"loop-test",
+ "steps":[
+  {"tool":"echo","params":{"ping":"weights?"}},
+  {"tool":"weights.resolve","params":{"q":"cube"}},
+  {"tool":"doc.read","params":{"path":"J:\\kilo-chat\\MEMORY.md"}}]}</textarea>
+        <div style="display:flex;gap:8px">
+          <button class="btn primary small" id="btnJobRun">BUILD · RUN LOOP</button>
+          <button class="btn small ghost" id="btnJobs">JOBS</button>
+        </div>
+        <div class="steps">
+          <div class="inset step" id="st1"><b>1 · QUEUE</b>job accepted</div>
+          <div class="inset step" id="st2"><b>2 · RUN</b>steps execute</div>
+          <div class="inset step" id="st3"><b>3 · STREAM</b>results back</div>
+        </div>
+        <div class="inset out mono" id="outLoop">—</div>
+      </div>
+
+      <div class="glass card">
+        <div class="cardhead">
+          <b style="letter-spacing:.1em">SYSTEM BRIDGES</b>
+          <span class="kicker">cordis · orca</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn small" id="btnCordis">CORDIS STATUS (8789)</button>
+          <button class="btn small" id="btnOrca">ORCA (READ-ONLY)</button>
+        </div>
+        <div class="inset out mono" id="outBridge">—</div>
+      </div>
+
+      <div class="glass card">
+        <div class="cardhead"><b style="letter-spacing:.1em">LAW</b><span class="kicker">unoverridable</span></div>
+        <div class="inset mono" style="padding:9px 11px;font-size:10.5px;line-height:1.7;color:var(--cream2)">
+          gateway binds 127.0.0.1 only<br>
+          loop = models only → token gate<br>
+          this build: no memory · no crawl · no hands<br>
+          weights retrieved — never embedded<br>
+          cordis passthrough readonly · orca whitelist readonly
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>TOTALCONTROL CORE · STATELESS LOOP HARNESS</span>
+    <span id="footVer"></span>
+  </div>
+</div>
+
+<script>
+(async function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ---------- rpc over /loop socket ---------- */
+  const rpcWaits = new Map();
+  let rpcSeq = 1, loopToken = '';
+  let lws = null;
+
+  function loopConnect() {
+    lws = new WebSocket('ws://127.0.0.1:8792/loop');
+    lws.onmessage = (ev) => {
+      let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+      if (m.kind === 'loop-open') {
+        loopToken = m.token || '';
+        $('loopTok').textContent = loopToken.slice(0, 6) + '…' + loopToken.slice(-4);
+        $('loopTok').title = 'click to copy';
+        $('loopTools').textContent = 'loop tools: ' + (m.tools || []).join(' · ');
+        $('loopState').textContent = 'channel open';
+        refreshMeta();
+      }
+      if (m.kind === 'rpc' || m.kind === 'rpc-error') {
+        const w = rpcWaits.get(m.id);
+        if (!w) return;
+        rpcWaits.delete(m.id);
+        m.kind === 'rpc' ? w.resolve(m.data) : w.reject(new Error(m.error || 'rpc error'));
+      }
+    };
+    lws.onclose = () => { $('loopState').textContent = 'channel lost'; setTimeout(loopConnect, 2500); };
+    lws.onerror = () => {};
+  }
+  function wsRpc(path, params) {
+    return new Promise((resolve, reject) => {
+      if (!lws || lws.readyState !== 1) { reject(new Error('loop channel down')); return; }
+      const id = 'rpc_' + (rpcSeq++).toString(36);
+      rpcWaits.set(id, { resolve, reject });
+      setTimeout(() => { if (rpcWaits.has(id)) { rpcWaits.delete(id); reject(new Error('rpc timeout')); } }, 30000);
+      lws.send(JSON.stringify({ kind: 'rpc', id, path, params: params || {} }));
+    });
+  }
+  const api = (p, o) => {
+    try {
+      const u = new URL(p, location.origin);
+      const params = {}; u.searchParams.forEach((v, k) => params[k] = v);
+      if (o && o.body) { try { Object.assign(params, JSON.parse(o.body)); } catch (e) {} }
+      if (lws && lws.readyState === 1) return wsRpc(u.pathname, params);
+    } catch (e) {}
+    const ctl = new AbortController();
+    const kill = setTimeout(() => ctl.abort(), 6500);
+    return fetch(p, { headers: { 'Content-Type': 'application/json' }, ...o, signal: ctl.signal })
+      .then(r => r.json()).finally(() => clearTimeout(kill));
+  };
+
+  /* ---------- health + meta ---------- */
+  async function refreshMeta() {
+    try {
+      const m = await api('/api/meta');
+      $('footVer').textContent = 'BUILD ' + m.version.toUpperCase() + ' · ' + (m.weights.bodies || 0) + ' CORE BODIES · ' + m.weights.total_gb_measured + ' GB';
+      $('dot').className = 'dot live'; $('stat').textContent = 'core live';
+    } catch (e) { $('dot').className = 'dot dead'; $('stat').textContent = 'core offline'; }
+  }
+  refreshMeta(); setInterval(refreshMeta, 5000);
+
+  /* ---------- loader ---------- */
+  let fam = 'ollama';
+  document.querySelectorAll('.fam').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.fam').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel'); fam = b.dataset.fam;
+  }));
+  async function loadCore(path) {
+    $('outWl').textContent = 'loading static weight core…';
+    try {
+      const r = await api('/api/weights/load', { method: 'POST', body: JSON.stringify({ family: fam, path: path || '' }) });
+      if (r.error) { $('outWl').textContent = 'load: ' + r.error; return; }
+      $('outWl').textContent = `loaded ${r.systems_loaded} system(s) from ${r.scanned_files} file(s) · ${r.family} · ${r.systems.slice(-8).join(', ')}`;
+      await paintLoaded();
+      refreshMeta();
+    } catch (e) { $('outWl').textContent = 'load failed: ' + e.message; }
+  }
+  async function paintLoaded() {
+    try {
+      const r = await api('/api/weights/loaded');
+      const rows = (r.systems || []);
+      document.querySelector('#wlTab tbody').innerHTML = rows.length ? rows.map(x => `
+        <tr><td>${esc(x.name).slice(0, 34)}</td><td>${esc(x.family || '')}</td><td>${esc(x.format || '')}</td>
+        <td>${x.gb}</td><td>${x.tensors || '—'}</td><td>${x.file_count || (x.files||[]).length}</td>
+        <td><span class="badge ok">${x.status}</span></td></tr>`).join('')
+        : '<tr><td colspan="7" class="muted">nothing loaded yet</td></tr>';
+    } catch (e) {}
+  }
+  $('btnWl').addEventListener('click', () => loadCore($('inWlPath').value));
+  $('btnWlVerify').addEventListener('click', async () => {
+    try {
+      const r = await api('/api/weights/verify');
+      $('outWl').textContent = `verify: ${r.connected}/${r.unique_files} files connected · ${r.total_gb_measured} GB measured`;
+    } catch (e) { $('outWl').textContent = e.message; }
+  });
+  await paintLoaded();
+
+  /* ---------- tools ---------- */
+  const put = (id, v) => $(id).textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 1).slice(0, 3000);
+  $('btnDoc').addEventListener('click', async () => {
+    try { const r = await api('/api/doc', { method: 'POST', body: JSON.stringify({ path: $('inDoc').value }) });
+      put('outDoc', r.error ? r.error : (r.kind === 'weight-binary' ? `${r.kind} · ${(r.size_bytes/1e9).toFixed(1)} GB — answered by the core` : `${r.path} (${r.size_bytes} B)\n` + r.text.slice(0, 500))); }
+    catch (e) { put('outDoc', e.message); }
+  });
+  $('btnWq').addEventListener('click', async () => {
+    try { const r = await wsRpc('/api/weights/resolve', { q: $('inWq').value });
+      put('outWq', (r.hits || []).map(h => `${h.entry_id.slice(0, 12)} · ${((h.total_bytes||0)/1e9).toFixed(1)} GB\n  ${(h.file_paths||[]).slice(0,3).join('\n  ')}`).join('\n') || 'no resonance'); }
+    catch (e) { put('outWq', e.message); }
+  });
+
+  /* ---------- bridges ---------- */
+  $('btnCordis').addEventListener('click', async () => {
+    const r = await wsRpc('/api/cordis/status', {});
+    put('outBridge', 'cordis: ' + JSON.stringify(r, null, 1));
+  });
+  $('btnOrca').addEventListener('click', async () => {
+    const r = await wsRpc('/api/orca/call', { args: ['worktree', 'list'] });
+    put('outBridge', 'orca:\n' + JSON.stringify(r, null, 1).slice(0, 1800));
+  });
+
+  /* ---------- loop runner ---------- */
+  function step(id, cls) { const el = $(id); el.classList.remove('on'); if (cls) el.classList.add('on'); }
+  $('inJob').addEventListener('input', () => { $('st1').classList.remove('on'); $('st2').classList.remove('on'); $('st3').classList.remove('on'); });
+  async function runJob() {
+    try {
+      const spec = JSON.parse($('inJob').value);
+      const r = await api('/api/loop/job', { method: 'POST', body: JSON.stringify({ model: spec.model || 'ui', steps: spec.steps, token: loopToken }) });
+      if (!r.ok) { put('outLoop', r.error); return; }
+      const jid = r.job.id;
+      step('st1', 'on'); $('loopState').textContent = 'job ' + jid;
+      await api('/api/loop/run', { method: 'POST', body: JSON.stringify({ id: jid, token: loopToken }) });
+      step('st2', 'on');
+      let s;
+      for (let i = 0; i < 60; i++) {
+        await new Promise(r2 => setTimeout(r2, 450));
+        s = await api(`/api/loop/status?id=${jid}&token=${encodeURIComponent(loopToken)}`);
+        if (s.state === 'done') break;
+      }
+      step('st3', 'on');
+      put('outLoop', `job ${jid} · ${s.progress}\n` + (s.results || []).map(x =>
+        `#${x.step} ${x.tool} ${x.ok ? 'ok ' + x.ms + 'ms' : 'ERR ' + x.error}\n  ` +
+        (x.result ? JSON.stringify(x.result).slice(0, 600) : '')).join('\n'));
+    } catch (e) { put('outLoop', 'loop: ' + e.message); }
+  }
+  $('btnJobRun').addEventListener('click', runJob);
+  $('btnJobs').addEventListener('click', async () => { const r = await api('/api/loop/jobs'); put('outLoop', r); });
+
+  loopConnect();
+})();</script>
+</body>
+</html>

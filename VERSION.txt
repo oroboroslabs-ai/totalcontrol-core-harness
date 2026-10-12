@@ -1,0 +1,1 @@
+TOTALCONTROL CORE HARNESS · private build 2026-10-12 · version 1.0.0 · law: gateway local-only 127.0.0.1 · weights retrieved, never embedded · loop = models only

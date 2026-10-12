@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TOTALCONTROL CORE — FREE</title>
+<style>
+:root{
+  --kg-bg:#191918; --cream:#faf9f5; --cream2:#c9c7c1; --cream3:#8f8e8a;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.17);
+  --mono:ui-monospace,Consolas,monospace;
+  --logo:url("logo.png");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 640px at 78% -12%, rgba(255,255,255,.07), transparent 62%),
+    var(--kg-bg);
+  color:var(--cream);
+  font:14.5px/1.55 -apple-system,"Segoe UI",system-ui,Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:48px 22px 70px;
+}
+.logo{width:66px;height:59px;background:var(--logo) center/contain no-repeat}
+.kicker{font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--cream3)}
+h1{font-size:40px;font-weight:800;letter-spacing:.03em;margin:14px 0 10px;text-align:center}
+h1 b{color:#fff}
+.tag{max-width:660px;color:var(--cream2);text-align:center;font-size:15.5px}
+.lawline{display:flex;gap:20px;margin:18px 0 26px;font-size:10px;letter-spacing:.14em;color:var(--cream3);text-transform:uppercase;flex-wrap:wrap;justify-content:center}
+.glass{
+  background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.045) 55%);
+  border:1px solid var(--line);border-radius:18px;
+  backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15);
+  box-shadow:0 18px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.cta{display:flex;gap:12px;margin-bottom:34px;flex-wrap:wrap;justify-content:center}
+.btn{appearance:none;border:1px solid var(--line2);border-radius:12px;cursor:pointer;
+  background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
+  color:var(--cream);font:inherit;font-weight:700;padding:14px 26px;letter-spacing:.04em;
+  text-decoration:none;display:inline-flex;align-items:center;gap:10px}
+.btn.primary{border-color:rgba(255,255,255,.75);background:linear-gradient(160deg,rgba(255,255,255,.26),rgba(255,255,255,.08));color:#fff}
+.btn:hover{transform:translateY(-1px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:1060px;width:100%}
+.card{padding:20px;display:flex;flex-direction:column;gap:9px}
+.card h3{font-size:13px;letter-spacing:.1em}
+.card p{color:var(--cream2);font-size:13px}
+.fam{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:4px}
+.pill{border:1px solid var(--line2);border-radius:10px;padding:9px 10px;text-align:center;font-size:11px;letter-spacing:.08em}
+.pill .ds{color:var(--cream3);font-size:9.5px;margin-top:3px}
+.soon{max-width:1060px;width:100%;margin-top:14px;padding:22px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-style:dashed}
+.soon .tt{font-weight:800;letter-spacing:.12em}
+.soon p{color:var(--cream3);font-size:12.5px;flex:1;min-width:260px}
+.step{max-width:1060px;width:100%;margin-top:14px;padding:20px 24px}
+.step ol{margin-left:18px;color:var(--cream2);font-size:13px;display:flex;flex-direction:column;gap:6px}
+.step code{font-family:var(--mono);background:rgba(0,0,0,.4);padding:1px 7px;border-radius:6px;border:1px solid var(--line);color:#fff}
+.law{max-width:1060px;width:100%;margin-top:14px;padding:16px 22px;display:flex;gap:18px;flex-wrap:wrap;
+  color:var(--cream3);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase}
+.footer{margin-top:34px;color:var(--cream3);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+  <span class="logo"></span>
+  <div class="kicker">oroboros labs · free release</div>
+  <h1>TOTALCONTROL <b>CORE</b></h1>
+  <p class="tag">Load the static weight core — Ollama, Hugging Face, LM Studio,
+    any path of the majors, shard blobs of any size — and the control loop hands
+    your installed models their engine. Runs entirely on your machine.</p>
+
+  <div class="lawline">
+    <span>local-only 127.0.0.1</span><span>weights retrieved — never embedded</span>
+    <span>stateless · no memory · no crawl</span><span>the loop = models only</span>
+  </div>
+
+  <div class="cta">
+    <a class="btn primary" id="dl" href="https://github.com/oroboroslabs-ai/totalcontrol-core-harness/releases/latest/download/TotalControl-Free-Core.zip">▼ DOWNLOAD THE FREE HARNESS</a>
+    <a class="btn" href="./AI-INSTALL.md">AI INSTALLER RUNBOOK</a>
+    <a class="btn" href="https://github.com/oroboroslabs-ai/totalcontrol-core-harness/tree/main">SOURCE</a>
+  </div>
+
+  <div class="grid">
+    <div class="glass card">
+      <div class="kicker">static weight core</div>
+      <h3>LOAD ANY WEIGHT SYSTEM</h3>
+      <p>GGUF and safetensors headers parsed directly — shard blobs, single files,
+         whole model dirs. Headers only: the data streams nowhere, the engine
+         retrieves, never embeds.</p>
+      <div class="fam">
+        <div class="pill">OLLAMA<div class="ds">manifest walk</div></div>
+        <div class="pill">HUGGINGFACE<div class="ds">hub safetensors</div></div>
+        <div class="pill">LM STUDIO<div class="ds">models dir</div></div>
+        <div class="pill">THE MAJORS<div class="ds">every root</div></div>
+      </div>
+    </div>
+    <div class="glass card">
+      <div class="kicker">the loop · models only</div>
+      <h3>A DATA LINE FOR YOUR MODELS</h3>
+      <p>Your installed models step through the loop on their own machine:
+         tools run in sequence and stream results back — echo, weights,
+         documents, cordis passthrough, orca — stateless by law.</p>
+      <div class="fam">
+        <div class="pill">QUEUE<div class="ds">job accepted</div></div>
+        <div class="pill">RUN<div class="ds">steps execute</div></div>
+        <div class="pill">STREAM<div class="ds">results back</div></div>
+      </div>
+    </div>
+    <div class="glass card">
+      <div class="kicker">private by design</div>
+      <h3>LOCAL-ONLY GATEWAY</h3>
+      <p>The gateway binds 127.0.0.1 — nothing leaves the machine it runs on.
+         Your models, your weights, your machine. The panel is a total GUI:
+         start and go, no configuration.</p>
+      <div class="fam">
+        <div class="pill">127.0.0.1 ONLY<div class="ds">no external calls</div></div>
+        <div class="pill">START &amp; GO<div class="ds">one click</div></div>
+        <div class="pill">AI INSTALLER<div class="ds">runbook included</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass soon">
+    <div class="tt">TOTALCONTROL CORE HANDS — COMING SOON</div>
+    <p>The enhanced build is in final testing. Its feature set is not part of
+       this release and is intentionally not described. Payments unlock at
+       launch.</p>
+  </div>
+
+  <div class="glass step">
+    <div class="kicker" style="margin-bottom:9px">install — human fast path</div>
+    <ol>
+      <li>Download the zip above and unpack it.</li>
+      <li>Python 3.13 is required — the AI runbook in the zip verifies and installs it.</li>
+      <li><code>py -3.13 -m venv .venv</code> then
+          <code>.venv\Scripts\pip install -r requirements-core.txt</code></li>
+      <li><code>START-CORE.cmd</code> — the panel opens at
+          <code>127.0.0.1:8792/core</code></li>
+      <li>Press <b>LOAD STATIC WEIGHT CORE</b> — the engine connects your
+          installed weights and your models take it from there.</li>
+    </ol>
+  </div>
+
+  <div class="law">
+    <span>weights never embedded — retrieved</span>
+    <span>core technology blackboxed</span>
+    <span>all rights reserved · oroboros labs</span>
+  </div>
+  <div class="footer">TOTALCONTROL · PRIVATE RELASE 1.0.0-FREE · THE PAID VERSION IS SEPARATE</div>
+
+</body>
+</html>
