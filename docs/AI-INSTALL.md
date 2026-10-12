@@ -1,88 +1,198 @@
-# AI-INSTALL — TOTALCONTROL CORE (FREE build)
+# Installing TOTALCONTROL CORE (Free)
 
-You are the AI installer. Perform every step in order on the user's machine.
-Verify after each step. If a step fails, correct it and retry before moving on.
-Never send data or open the gateway beyond 127.0.0.1.
+This is the install manual for the **free** build of TotalControl Core.
+It works in two ways:
 
-## 0) What this package is
+- **Human install** — follow the steps in Part A by hand (5 minutes).
+- **Assisted install** — give Part B to an AI assistant (Claude, Codex, Copilot,
+  any agent with shell access) and let it perform and verify the steps.
 
-TOTALCONTROL CORE — the free, simplified, STATELESS harness:
-no hands, no browser extension, no crawler, no memory (law, not config).
-It loads the static weight core (any size, shard blobs: Ollama / Hugging Face /
-LM Studio / any path) and exposes the LOOP — a models-only data line — plus
-doc reading, cordis passthrough, orca whitelist.
+The package is portable: everything runs from the folder you unpack it into,
+and the gateway is local-only (127.0.0.1). Nothing is sent anywhere.
 
-Package layout:
-  server_core.py      the free server (binds 127.0.0.1:8792)
-  blackbox/engine.pyc THE CORE TECHNOLOGY — compiled bytecode (source stripped)
-  gui-core/           the control panel (simplified)
-  START-CORE.cmd      start and go
-  requirements-core.txt
+---
 
-## 1) Environment check (verify)
+## What ships in the package
 
-- **CPython 3.13.x is REQUIRED** — the core blackbox is version-locked
-  bytecode. `py -3.13 --version` must print 3.13.x.
-- If 3.13 is missing: install Python 3.13 (winget install -e Python.Python.3.13
-  or python.org download), then continue. Do not substitute another version.
-- Windows + PowerShell available.
+| File | What it is |
+|---|---|
+| `server_core.py` | The free harness server (the panel + the loop) |
+| `blackbox/engine.pyc` | The engine, shipped as ready-to-run bytecode |
+| `gui-core/` | The control panel (browser UI) |
+| `START-CORE.cmd` | One-click launcher for Windows |
+| `requirements-core.txt` | The Python dependencies |
+| `tests/probe_free.py` | The free-tier verification probe |
 
-## 2) Dependencies
+Size: about 1.95 MB. Python 3.13 is the required runtime.
 
-From the package directory:
+---
+
+## Part A — Human install
+
+### Step 1 — Get Python 3.13
+
+TotalControl Core runs on **Python 3.13**.
+
+Check if you have it:
+
+```bat
+py -3.13 --version
+```
+
+If it prints `Python 3.13.x`, continue. If not, install it:
+
+```bat
+winget install -e Python.Python.3.13
+```
+
+(or download the installer from [python.org](https://www.python.org/downloads/)
+and run it — be sure "Add to PATH" is enabled).
+
+### Step 2 — Download and unpack
+
+Get **TotalControl-Free-Core.zip** from the
+[releases page](https://github.com/oroboroslabs-ai/totalcontrol-core-harness/releases/latest)
+and unpack it to any folder, for example:
 
 ```
+C:\TotalControl\TotalControlFreeCore\
+```
+
+You do not need an installer. The folder is portable — move it anywhere,
+delete it to uninstall.
+
+### Step 3 — Install dependencies
+
+Open PowerShell in the unpacked folder and run:
+
+```bat
 py -3.13 -m venv .venv
-.venv\Scripts\python.exe -m pip install --quiet --disable-pip-version-check fastapi uvicorn pillow numpy
+.venv\Scripts\python.exe -m pip install -r requirements-core.txt
 ```
 
-Verify: `.venv\Scripts\python.exe -c "import fastapi, uvicorn, PIL; print('deps ok')"`
-Playwright is NOT needed for this package. Never install it here.
+This installs the dependencies (FastAPI, Uvicorn, Pillow, NumPy) into a private
+`.venv` inside the folder. Your system Python stays untouched.
 
-## 3) Launch (start and go)
+### Step 4 — Start
+
+Double-click:
 
 ```
 START-CORE.cmd
 ```
-(or: `.venv\Scripts\python.exe server_core.py`)
 
-Verify:
-- `curl.exe http://127.0.0.1:8792/api/health` →
-  `"service":"totalcontrol-core","version":"3.1-core-free"`
-- Open http://127.0.0.1:8792/core → the TOTALCONTROL CORE panel.
-- The panel should show "core live".
+(or run `.venv\Scripts\python.exe server_core.py` from the folder).
 
-## 4) Function check (loop)
+### Step 5 — Open the panel
+
+Open this address in your browser:
 
 ```
-.venv\Scripts\python.exe -c "import json,urllib.request; print(json.loads(urllib.request.urlopen('http://127.0.0.1:8792/api/weights/bodies', timeout=30).read())['engine'])"
+http://127.0.0.1:8792/core
 ```
-Expect `weight_access.KnowledgeStorage` or `totalcontrol.builtin-storage`.
-Then in the panel:
-- Press LOAD STATIC WEIGHT CORE (OLLAMA preset) → systems appear, connected.
-- Press VERIFY → files connected count.
-- Run BUILD · RUN LOOP → job steps stream back.
 
-## 5) What to tell the user
+You should see the **TotalControl Core** panel with the status "core live".
 
-- The gateway binds 127.0.0.1 only. Nothing leaves this machine.
-- Weights are parsed at the header level and RETRIEVED — never embedded.
-- No memory, no crawl, no browser hands exist in this product.
-- Upgrading hands is the paid package (TotalControl Core Hands) — its
-  features are not advertised yet.
-- The engine ships as compiled blackbox bytecode; no source is included.
+### Step 6 — Load your models and run the loop
 
-## 6) Troubleshooting
+1. Press **LOAD STATIC WEIGHT CORE** with the preset of your choice
+   (OLLAMA · HUGGINGFACE · LM STUDIO · THE MAJORS).
+2. Loaded weight systems appear in the table and report **connected**.
+3. Press **VERIFY** to confirm the connected file count.
+4. In **THE LOOP · MODELS ONLY**, build a job and press **BUILD · RUN LOOP** —
+   the steps execute and results stream back to the panel.
 
-- "core blackbox requires CPython 3.13" → wrong interpreter built the venv;
-  delete .venv and rebuild with `py -3.13` per step 2.
-- Port 8792 busy → another harness is running. Stop it (close its window)
-  and relaunch; the launcher reuses the same port by design.
-- `pip` behind a proxy → use `python -m pip install --proxy <user proxy> ...`
-- Wallpaper change fails → the image path must be an image file
-  (png/jpg/webp/bmp/gif). The panel defaults work without changes.
+Models are loaded by parsing their file headers only; the heaviest weight
+blobs are never embedded in anything — they stay on your disk, in place.
 
-## 7) Law (never override)
+---
 
-127.0.0.1 only · loop = models only · no memory · no crawl · no hands ·
-weights retrieved, never embedded.
+## Part B — Give this to an AI assistant
+
+Copy everything in this block to an AI assistant (or point it at raw:
+
+`https://raw.githubusercontent.com/oroboroslabs-ai/totalcontrol-core-harness/main/docs/AI-INSTALL.md`):
+
+```text
+You are the installer for TOTALCONTROL CORE (free build) on a Windows machine.
+Perform every step in order. Verify after each step. If a step fails, fix it
+and retry before moving on. Ask before anything that changes machine settings.
+
+1) Verify Python 3.13: run `py -3.13 --version`. If Python 3.13 is missing,
+   install it with `winget install -e Python.Python.3.13`, then re-verify.
+   Do not substitute another Python version.
+
+2) In the unpacked package folder, create a virtual environment and install
+   the pinned dependencies:
+     py -3.13 -m venv .venv
+     .venv\Scripts\python.exe -m pip install -r requirements-core.txt
+   Verify: `.venv\Scripts\python.exe -c "import fastapi, uvicorn, PIL; print('deps ok')"`
+
+3) Launch: `START-CORE.cmd` (or `.venv\Scripts\python.exe server_core.py`).
+   Verify the service answers on http://127.0.0.1:8792/api/health and that
+   http://127.0.0.1:8792/core serves the panel.
+
+4) Run the verification probe:
+     .venv\Scripts\python.exe tests\probe_free.py
+   Report its output to the user.
+
+5) Tell the user how to open http://127.0.0.1:8792/core and press
+   LOAD STATIC WEIGHT CORE.
+
+Rules:
+- The gateway is local-only (127.0.0.1). Never expose it, tunnel it, or port-forward it.
+- Never modify the package contents or the shipped bytecode.
+- The package is portable; do not install anything system-wide.
+- Playwright is not needed for this package; do not install it.
+```
+
+---
+
+## Verification checklist
+
+| Check | Expected |
+|---|---|
+| `py -3.13 --version` | Python 3.13.x |
+| deps import | `deps ok` |
+| `http://127.0.0.1:8792/api/health` | service answers, "core live" |
+| Panel at `/core` | TotalControl Core panel renders |
+| Load a preset | weight systems appear, connected |
+| `tests/probe_free.py` | all free-tier probes pass |
+
+---
+
+## Troubleshooting
+
+- **"blackbox requires CPython 3.13"** — the virtual environment was built
+  with a different Python. Delete the `.venv` folder and repeat Step 3.
+- **Port 8792 already in use** — another TotalControl panel is running.
+  Close it, then start again (one panel per machine by design).
+- **pip fails behind a proxy** — run pip with your proxy settings:
+  `.venv\Scripts\python.exe -m pip install --proxy http://proxy:port -r requirements-core.txt`
+- **Antivirus flags the bytecode** — the engine ships as compiled Python
+  bytecode; add the folder to your antivirus exclusions if you trust it,
+  or inspect the folder before running.
+- **Wallpaper change fails** — the path must point to an image file
+  (png / jpg / webp / bmp / gif). The panel defaults work without changes.
+
+---
+
+## Uninstall
+
+Close the panel window, then delete the package folder. Nothing was written
+outside the folder; the `.venv` is inside it.
+
+---
+
+## Privacy & scope of the free build
+
+- The gateway binds **127.0.0.1 only** — no cloud service, no account, no telemetry.
+- Model weights are **retrieved in place — never embedded or copied** into any output.
+- The free build has **no memory, no crawler, and no browser hands**.
+- The engine ships as ready-to-run compiled bytecode; its source is not included.
+- The extended edition (**TotalControl Core Hands**) is in final testing;
+  its features are not part of this release. Payments unlock at launch.
+
+---
+
+*TotalControl Core (free) · /A Oroboros / Anthropic · local-only by design*
