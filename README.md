@@ -53,3 +53,13 @@ the free build · weights are retrieved, never embedded · nothing leaves the
 machine it runs on.
 
 **TotalControl** — Oroboros Labs. All rights reserved.
+## Operations manual (online)
+
+- The full HELP & OPERATIONS MANUAL is hosted on our page: <https://oroboroslabs-ai.github.io/anthropic/operations.html>
+- AI installer (this repo): docs/AI-INSTALL.md — raw: <https://raw.githubusercontent.com/oroboroslabs-ai/totalcontrol-core-harness/main/docs/AI-INSTALL.md>
+
+## One-click starters (Q:\\__harness-starters)
+- start-oroboros-anthropic-harness-8792.bat — the FULL PAID hands harness (8792: panel + relay + session)
+- start-totalcontrol-core-free-8792.bat — the FREE core (8792/core; the free product zip)
+- start-oroboros-anthropic-core-harness-8789.bat — the cordis harness set (8789: memory systems + crawlers + doc feed)
+The port law: 8792 = one TotalControl server at a time (the paid hands rig or the free core).
