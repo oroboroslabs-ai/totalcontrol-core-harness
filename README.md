@@ -1,5 +1,10 @@
 # TOTALCONTROL CORE HARNESS
 
+## Updates — 1.6.0
+
+- Agent and skills tools are now active on install.
+- The bypass not working in some instances has been fixed.
+
 **Load the static weight core. Hand your installed models their engine.**
 
 The free, simplified, stateless build of the TotalControl harness: loads

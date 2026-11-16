@@ -39,6 +39,7 @@ STATE_DIR = ROOT / "sessions"; STATE_DIR.mkdir(exist_ok=True)
 
 BIND = "127.0.0.1"
 PORT = 8792
+RELEASE = "1.6.0"
 
 ENGINE = engine.WeightEngine()
 LOADED = engine.LoadedWeights(ENGINE, STATE_DIR / "loaded-weights.json")
@@ -71,7 +72,7 @@ async def loop_ws(ws: WebSocket):
                 try:
                     data = await engine.rpc(msg.get("path", ""), msg.get("params") or {},
                                             engine=ENGINE, memory=None, loaded=LOADED,
-                                            loop=LOOP, version="3.1-core-free",
+                                            loop=LOOP, version=RELEASE,
                                             bind=f"{BIND}:{PORT}",
                                             relay_info={"hands": False,
                                                         "extensions": 0, "models": 0,
@@ -91,21 +92,24 @@ async def loop_ws(ws: WebSocket):
 
 @app.get("/api/health")
 async def health():
-    return {"ok": True, "service": "totalcontrol-core", "version": "3.1-core-free",
-            "product": "core-free", "denied": sorted(DENIED), "ts": time.time()}
+    return {"ok": True, "service": "totalcontrol-core", "version": RELEASE,
+            "product": "core-free", "agent": True, "tools": True, "skills": True,
+            "denied": sorted(DENIED), "ts": time.time()}
 
 
 @app.get("/api/meta")
 async def meta():
     bodies = ENGINE.bodies()
-    return {"service": "TotalControl Core Harness", "version": "3.1-core-free",
+    return {"service": "TotalControl Core Harness", "version": RELEASE,
             "bind": f"{BIND}:{PORT}", "product": "core-free",
+            "agent": True, "tools": True, "skills": True,
             "loop": {"token": engine.loop_token(), "tools": list(engine.LOOP_STEP_TOOLS)},
             "weights": {"bodies": len(bodies.get("bodies", [])),
                         "total_gb_measured": bodies.get("total_gb"),
                         "engine": bodies.get("engine")},
             "memory_records": None,
             "law": ["gateway local-only 127.0.0.1", "loop = models only",
+                    "agent and skills active on install",
                     "no memory · no crawl · no hands",
                     "weights retrieved — never embedded"]}
 
@@ -188,6 +192,58 @@ async def wallpaper_set_api(body: dict):
 @app.get("/api/wallpaper")
 async def wallpaper_get_api():
     return engine.wallpaper_get()
+
+
+FREE_SKILLS = [
+    {"name": "static-weight-core", "description": "Load shard headers from Ollama, Hugging Face, LM Studio, and the majors."},
+    {"name": "loop", "description": "Models-only loop. Sequential steps stay on this machine."},
+    {"name": "doc", "description": "Read a local document."},
+    {"name": "cordis", "description": "Cordis passthrough on this machine."},
+    {"name": "orca", "description": "Orca whitelist call on this machine."},
+]
+
+FREE_TOOLS = {
+    "weights.bodies": lambda a: ENGINE.bodies(),
+    "weights.resolve": lambda a: {"query": a.get("q", ""), "hits": ENGINE.search(str(a.get("q", "")), int(a.get("top_k", 8) or 8))},
+    "weights.verify": lambda a: ENGINE.verify(),
+    "weights.load": lambda a: LOADED.load(a.get("family", "majors"), a.get("path", "")),
+    "weights.loaded": lambda a: LOADED.list(),
+    "doc.read": lambda a: engine.read_doc(a.get("path", "")),
+    "cordis.status": lambda a: engine.cordis_status(),
+    "cordis.call": lambda a: engine.cordis_fetch(a.get("path", "/")),
+    "orca.call": lambda a: engine.orca_call(a.get("args", [])),
+    "wallpaper.get": lambda a: engine.wallpaper_get(),
+    "wallpaper.set": lambda a: engine.wallpaper_set(a),
+}
+
+
+@app.get("/api/agent/status")
+async def agent_status():
+    return {"ok": True, "agent": True, "tools": True, "skills": True,
+            "permanent": True, "version": RELEASE, "product": "core-free",
+            "skill_count": len(FREE_SKILLS), "tool_count": len(FREE_TOOLS),
+            "law": "local-only 127.0.0.1",
+            "notice": "Agent and skills tools are active on install."}
+
+
+@app.get("/api/skill/registry")
+async def skill_registry():
+    return {"ok": True, "skills": FREE_SKILLS, "count": len(FREE_SKILLS), "version": RELEASE}
+
+
+@app.post("/api/tools/invoke")
+async def tools_invoke(body: dict):
+    name = str((body or {}).get("tool") or "")
+    head = name.split(".", 1)[0]
+    if name in DENIED or head in DENIED:
+        return {"ok": False, "error": "denied", "tool": name}
+    fn = FREE_TOOLS.get(name)
+    if not fn:
+        return {"ok": False, "error": "unknown tool", "tool": name, "tools": sorted(FREE_TOOLS)}
+    try:
+        return {"ok": True, "tool": name, "data": fn((body or {}).get("args") or {})}
+    except Exception as e:
+        return {"ok": False, "tool": name, "error": str(e)}
 
 
 @app.get("/core")

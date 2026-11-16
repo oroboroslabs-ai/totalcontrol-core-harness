@@ -23,10 +23,14 @@ def main():
         failures += 0 if ok else 1
 
     h = rest("/api/health")
-    mark("health", h.get("ok") is True and h.get("product") == "core-free", h.get("version"))
+    mark("health", h.get("ok") is True and h.get("product") == "core-free" and h.get("version") == "1.6.0", h.get("version"))
+    a = rest("/api/agent/status")
+    mark("agent and skills on install",
+         a.get("agent") is True and a.get("tools") is True and a.get("skills") is True and a.get("permanent") is True,
+         a.get("version"))
 
     m = rest("/api/meta")
-    law_ok = (not m.get("extensions")) and "core" == m.get("product")
+    law_ok = (not m.get("extensions")) and m.get("product") == "core-free"
     mark("core law (no hands surface)", law_ok, m.get("version"))
 
     b = rest("/api/weights/bodies")

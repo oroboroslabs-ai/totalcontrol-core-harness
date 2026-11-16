@@ -83,6 +83,11 @@ START-CORE.cmd
 
 (or run `.venv\Scripts\python.exe server_core.py` from the folder).
 
+Verify:
+
+- `curl.exe http://127.0.0.1:8792/api/health` → `"service":"totalcontrol-core","version":"1.6.0"`
+- `curl.exe http://127.0.0.1:8792/api/agent/status` → `"agent":true,"tools":true,"skills":true`
+
 ### Step 5 — Open the panel
 
 Open this address in your browser:
